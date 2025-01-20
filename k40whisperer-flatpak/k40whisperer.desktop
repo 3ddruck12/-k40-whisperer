@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Name=K40 Whisperer
+Comment=Laser Cutter Control Software
+Exec=python3 /app/bin/k40_whisperer.py
+Icon=k40whisperer
+Terminal=false
+Type=Application
+Categories=Graphics;
+Actions=;
+
