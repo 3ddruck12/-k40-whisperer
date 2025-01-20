@@ -1,7 +1,7 @@
 {
     "app-id": "com.k40whisperer",
     "runtime": "org.freedesktop.Platform",
-    "runtime-version": "21.08",
+    "runtime-version": "22.08",
     "sdk": "org.freedesktop.Sdk",
     "command": "python3 /app/bin/k40_whisperer.py",
     "finish-args": [
@@ -10,86 +10,49 @@
         "--device=usb",
         "--filesystem=host"
     ],
-    "icon": "/app/icons/scorchworks.ico",
-    "desktop-file": "k40whisperer.desktop",
     "modules": [
         {
             "name": "k40whisperer",
-            "buildsystem": "python3",
+            "buildsystem": "simple",
+            "build-commands": [
+                "mkdir -p /app/bin",
+                "install -Dm755 k40_whisperer.py /app/bin/k40_whisperer.py",
+                "mkdir -p /app/icons",
+                "install -Dm644 scorchworks.ico /app/icons/scorchworks.ico"
+            ],
             "sources": [
                 {
                     "type": "git",
                     "url": "https://github.com/3ddruck12/k40-whisperer.git",
-                    "branch": "master"
+                    "branch": "main"
                 }
             ]
         },
         {
-            "name": "python-lxml",
+            "name": "python-dependencies",
             "buildsystem": "simple",
-            "sources": [
-                {
-                    "type": "archive",
-                    "url": "https://files.pythonhosted.org/packages/ea/24/cff5b6c9904672ffbc9d2fe2f35ea00f6f24f5e4f24c09f7c0d97f34a537/lxml-4.9.1.tar.gz",
-                    "sha256": "b26e3a3fe95c653c8eab6d935a9a63c9f87060ed7504e8e6f99b773b21e5be5b"
-                }
-            ]
-        },
-        {
-            "name": "python-pyusb",
-            "buildsystem": "simple",
-            "sources": [
-                {
-                    "type": "archive",
-                    "url": "https://files.pythonhosted.org/packages/57/42/4b7b16b65823e58b7b2b0225d5cdac9e572e9a57d219bde7fe1e60f47a542/pyusb-1.1.0.tar.gz",
-                    "sha256": "8b8b98cb1f1611c73d0cfeaa4c7e772dce4d41b3bc278d2a035f2bc2b28b4a3a"
-                }
-            ]
-        },
-        {
-            "name": "python-pillow",
-            "buildsystem": "simple",
-            "sources": [
-                {
-                    "type": "archive",
-                    "url": "https://files.pythonhosted.org/packages/3f/6c/64c90e9b7ea1009e1d2b90f0881b2c6409c1252b34a2093cf6a8cc9f2b8e/Pillow-8.4.0.tar.gz",
-                    "sha256": "6e7078f9cfa2eec53c8cf16179fcf01de4d6dbd9c115249961f51a299a8d58f7"
-                }
-            ]
-        },
-        {
-            "name": "python-pyclipper",
-            "buildsystem": "simple",
-            "sources": [
-                {
-                    "type": "archive",
-                    "url": "https://files.pythonhosted.org/packages/0c/2d/9c96da9d173f9c9e1b3f23eaa45b48e3a024dfffbf3e804a0ffb9b91b123/pyclipper-1.3.0.tar.gz",
-                    "sha256": "9db457c9e194f0b7b2517f81008b59d9ab5d5d6c019f80407328ec387f6e5c51"
-                }
-            ]
-        }
-    ],
-    "build-extensions": [
-        {
-            "name": "python-extensions",
-            "buildsystem": "shell",
             "build-commands": [
-                "sudo groupadd lasercutter",
-                "sudo usermod -a -G lasercutter $USER",
-                "sudo gedit /etc/udev/rules.d/97-ctc-lasercutter.rules"
+                "pip3 install --no-index --find-links='file://${PWD}' -r requirements.txt --prefix=/app"
+            ],
+            "sources": [
+                {
+                    "type": "file",
+                    "path": "requirements.txt"
+                }
+            ]
+        },
+        {
+            "name": "udev-rules",
+            "buildsystem": "simple",
+            "build-commands": [
+                "install -Dm644 97-ctc-lasercutter.rules /app/etc/udev/rules.d/97-ctc-lasercutter.rules"
+            ],
+            "sources": [
+                {
+                    "type": "inline",
+                    "contents": "SUBSYSTEM==\"usb\", ATTRS{idVendor}==\"1a86\", ATTRS{idProduct}==\"5512\", ENV{DEVTYPE}==\"usb_device\", MODE=\"0664\", GROUP=\"lasercutter\""
+                }
             ]
         }
-    ],
-    "metadata": {
-        "name": "K40 Whisperer",
-        "short-description": "Laser Cutter Control Software",
-        "description": "K40 Whisperer software for controlling K40 laser cutter machines, including settings for laser board and operation. See documentation for installation instructions.",
-        "instructions": [
-            "1. Create a group for users: sudo groupadd lasercutter",
-            "2. Add yourself: sudo usermod -a -G lasercutter [YOUR USERNAME]",
-            "3. Create udev rule file: sudo gedit /etc/udev/rules.d/97-ctc-lasercutter.rules",
-            "4. Unzip K40 Whisperer source and install dependencies via pip."
-        ]
-    }
+    ]
 }
-
