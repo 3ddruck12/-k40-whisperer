@@ -19,7 +19,7 @@
             "buildsystem": "simple",
             "build-commands": [
                 "mkdir -p /app/bin",
-                "install -Dm755 k40_whisperer.py /app/bin/k40_whisperer.py",
+                "install -Dm755 python/K40_Whisperer-0.68_src/k40_whisperer.py /app/bin/k40_whisperer.py",
                 "mkdir -p /app/icons",
                 "install -Dm644 scorchworks.ico /app/icons/scorchworks.ico",
                 "mkdir -p /app/share/applications",
@@ -28,7 +28,7 @@
             "sources": [
                 {
                     "type": "dir",
-                    "path": "com/k40whisperer/python/K40_Whisperer-0.68_src"
+                    "path": "python/K40_Whisperer-0.68_src"
                 }
             ]
         },
@@ -41,7 +41,7 @@
             "sources": [
                 {
                     "type": "file",
-                    "path": "com/k40whisperer/requirements.txt"
+                    "path": "requirements.txt"
                 }
             ]
         },
@@ -53,8 +53,8 @@
             ],
             "sources": [
                 {
-                    "type": "inline",
-                    "contents": "SUBSYSTEM==\"usb\", ATTRS{idVendor}==\"1a86\", ATTRS{idProduct}==\"5512\", ENV{DEVTYPE}==\"usb_device\", MODE=\"0664\", GROUP=\"lasercutter\""
+                    "type": "file",
+                    "path": "97-ctc-lasercutter.rules"
                 }
             ]
         }
