@@ -62,3 +62,4 @@ fi
 
 echo "Flatpak-Anwendung erfolgreich gebaut und installiert!"
 exit 0
+
