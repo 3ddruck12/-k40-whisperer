@@ -1,0 +1,62 @@
+{
+    "app-id": "org.skorch.k40whisperer",
+    "runtime": "org.freedesktop.Platform",
+    "runtime-version": "22.08",
+    "sdk": "org.freedesktop.Sdk",
+    "command": "k40_whisperer.py",
+    "finish-args": [
+        "--share=network",
+        "--share=ipc",
+        "--share=pid",
+        "--socket=x11",
+        "--device=dri",
+        "--device=all",
+        "--filesystem=home"
+    ],
+    "modules": [
+        {
+            "name": "k40whisperer",
+            "buildsystem": "simple",
+            "build-commands": [
+                "mkdir -p /app/bin",
+                "install -Dm755 k40_whisperer.py /app/bin/k40_whisperer.py",
+                "mkdir -p /app/icons",
+                "install -Dm644 scorchworks.ico /app/icons/scorchworks.ico",
+                "mkdir -p /app/share/applications",
+                "install -Dm644 k40whisperer.desktop /app/share/applications/k40whisperer.desktop"
+            ],
+            "sources": [
+                {
+                    "type": "dir",
+                    "path": "com/k40whisperer/python/K40_Whisperer-0.68_src"
+                }
+            ]
+        },
+        {
+            "name": "python-dependencies",
+            "buildsystem": "simple",
+            "build-commands": [
+                "pip3 install --no-index --find-links='file://${PWD}' -r requirements.txt --prefix=/app"
+            ],
+            "sources": [
+                {
+                    "type": "file",
+                    "path": "com/k40whisperer/requirements.txt"
+                }
+            ]
+        },
+        {
+            "name": "udev-rules",
+            "buildsystem": "simple",
+            "build-commands": [
+                "install -Dm644 97-ctc-lasercutter.rules /app/etc/udev/rules.d/97-ctc-lasercutter.rules"
+            ],
+            "sources": [
+                {
+                    "type": "inline",
+                    "contents": "SUBSYSTEM==\"usb\", ATTRS{idVendor}==\"1a86\", ATTRS{idProduct}==\"5512\", ENV{DEVTYPE}==\"usb_device\", MODE=\"0664\", GROUP=\"lasercutter\""
+                }
+            ]
+        }
+    ]
+}
